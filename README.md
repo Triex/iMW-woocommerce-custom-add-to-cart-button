@@ -1,4 +1,4 @@
-# iMW-woocommerce-custom-add-to-cart-button
+# iMW Woocommerce Custom Add-to-cart Button
 
 [![Build status](https://img.shields.io/github/workflow/status/Triex/iMW-woocommerce-custom-add-to-cart-button)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/actions)
 [![GitHub release](https://img.shields.io/github/release/Triex/iMW-woocommerce-custom-add-to-cart-button.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/releases)
