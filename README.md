@@ -7,7 +7,8 @@
 
 A WordPress plugin that adds a custom button to WooCommerce products which can replace the default add-to-cart button or be added as a second button.
 
-Made for use with Odrin Theme, but could work with others (not tested).
+- Works even when products have no stock levels or price set
+- Made for use with Odrin Theme, but could work with others (not tested).
 
 _Note: The default styles are designed to match the site it was intended for._
 
