@@ -4,18 +4,20 @@
  * Plugin Name: iMW WooCommerce Custom Add to Cart Button
  * Plugin URI: https://imakewebsites.co
  * Author: <a href="https://imakewebsites.co" target="_blank">Alex Zarov</a>
- * Description: Allows toggleable replacement of Woocommerce add to cart button with custom link/text
- * Version: 0.3.5
+ * Description: Allows toggleable replacement of Woocommerce add to cart button with custom link/text, with custom styling and settings for each product.
+ * Version: 0.3.6
  * License: GPLv2
  * License URL: https://imakewebsites.co
  * Text Domain: iMW-woocommerce-custom-add-to-cart-button
  */
 
+ // Github Repo: https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button
+
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// This plugin allows us to set a custom button text and link for each product, even if it has no price.
+// This plugin allows us to set a custom button, styles, text and link for each product - even if it has no price.
 
 add_filter('woocommerce_product_data_tabs', 'add_imw_custom_button_tab');
 function add_imw_custom_button_tab($tabs)
@@ -102,7 +104,6 @@ function add_imw_custom_button_tab_options()
                 'value' => $custom_button_open_in_new_tab,
             ));
             echo '<p>Note: You must enter all styles (radius optional), or override them by toggling the `button` class - for it to render correctly.</p>';
-            // button styles
             woocommerce_wp_checkbox(array(
                 'id' => 'imw_custom_button_toggle_button_class',
                 'label' => __('Toggle Button Class', 'woocommerce'),
@@ -173,9 +174,8 @@ function add_imw_custom_button_tab_options()
 
             echo
             '<div style="padding-bottom: 10px; display: block; margin: 0 auto; width: fit-content;">';
-            // button to fill in all fields with their placeholder values and DO NOT SAVE THE PAGE
+            // button to fill in all fields with their placeholder values
             echo '<span id="imw-custom-button-set-placeholder-defaults" onclick="imwCustomButtonSetPlaceholderDefaults()" style="cursor:pointer; text-decoration:underline; color: #2271b1;">Auto-set Defaults</span>';
-            // add a`?` tip - to the button so that it shows the description when hovered over
             echo '<span class="woocommerce-help-tip" data-tip="This button will fill in the `Button Text`, and all the fields below with their default values."></span>';
 
             echo '</div>';
@@ -384,13 +384,13 @@ function save_imw_custom_button_tab_options($post_id)
     update_post_meta($post_id, 'imw_replace_add_to_cart_toggle', $replace_add_to_cart_toggle);
 }
 
-//  * @hooked woocommerce_template_single_add_to_cart - 30 priority (make it higher priority here)
+//  * @hooked woocommerce_template_single_add_to_cart - 30 priority (make it higher priority here if using standard hooks)
 
-// do actions 
+// do actions
 add_action('imw_custom_button_action', 'imw_custom_button');
 // add_action('woocommerce_before_add_to_cart_button', 'imw_custom_button', 1, 2);
 
-// create a stylesheet to enqueue (where we can enter the custom button / user defined styles)
+// create styles to enqueue (where we can enter the custom button / user defined styles)
 function imw_custom_button_style()
 {
     global $product;
@@ -430,23 +430,23 @@ function imw_custom_button_style()
 
 function imw_custom_button()
 {
-    $custom_button_style = imw_custom_button_style();
-
-    wp_register_style('imw-custom-button-style', false);
-    wp_enqueue_style('imw-custom-button-style');
-    wp_add_inline_style('imw-custom-button-style', $custom_button_style);
-
-    add_action('wp_enqueue_scripts', 'imw_custom_button_style');
-
     global $product;
     $custom_button_toggle = get_post_meta($product->get_id(), 'imw_custom_button_toggle', true);
     if ($custom_button_toggle == 'yes') {
+        $custom_button_style = imw_custom_button_style();
+
+        wp_register_style('imw-custom-button-style', false);
+        wp_enqueue_style('imw-custom-button-style');
+        wp_add_inline_style('imw-custom-button-style', $custom_button_style);
+
+        add_action('wp_enqueue_scripts', 'imw_custom_button_style');
+
         $custom_button_text = get_post_meta($product->get_id(), 'imw_custom_button_text', true);
         $custom_button_link = get_post_meta($product->get_id(), 'imw_custom_button_link', true);
         $custom_button_open_in_new_tab = get_post_meta($product->get_id(), 'imw_open_in_new_tab', true);
         $custom_button_toggle_button_class = get_post_meta($product->get_id(), 'imw_custom_button_toggle_button_class', true);
         $custom_button_custom_classes = get_post_meta($product->get_id(), 'imw_custom_button_custom_classes', true);
-        echo '<button href="' . $custom_button_link . '" class="btn imw-custom-button ' . ($custom_button_toggle_button_class == 'yes' ? 'button' : '') . ' ' . $custom_button_custom_classes . '" ' . ($custom_button_open_in_new_tab == 'yes' ? 'target="_blank"' : '') . '>' . $custom_button_text . '</button>';
+        echo '<a href="' . $custom_button_link . '" class="btn imw-custom-button ' . ($custom_button_toggle_button_class == 'yes' ? 'button' : '') . ' ' . $custom_button_custom_classes . '" ' . ($custom_button_open_in_new_tab == 'yes' ? 'target="_blank"' : '') . '>' . $custom_button_text . '</a>';
         // if ($replace_add_to_cart_toggle == 'yes') {
         //     echo '<style>.single_add_to_cart_button {display: none;}</style>';
         // // done in single-product/add-to-cart/simple.php
