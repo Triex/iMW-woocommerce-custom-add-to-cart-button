@@ -5,6 +5,8 @@
 [![GitHub issues](https://img.shields.io/github/issues/Triex/iMW-woocommerce-custom-add-to-cart-button.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/issues)
 [![GitHub license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/blob/master/LICENSE)
 
+TEST FOR PR
+
 A WordPress plugin that adds a custom button to WooCommerce products which can replace the default add-to-cart button or be added as a second button.
 
 - Works even when products have no stock levels or price set
