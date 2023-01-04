@@ -1,5 +1,6 @@
 # iMW Woocommerce Custom Add-to-cart Button
 [![Build status](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/actions/workflows/release.yml/badge.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/actions)
+[![Security Analysis](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/actions/workflows/semgrep-analysis.yml/badge.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/actions/workflows/semgrep-analysis.yml)
 [![GitHub release](https://img.shields.io/github/release/Triex/iMW-woocommerce-custom-add-to-cart-button.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/releases)
 [![GitHub issues](https://img.shields.io/github/issues/Triex/iMW-woocommerce-custom-add-to-cart-button.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/issues)
 [![GitHub license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/blob/master/LICENSE)
