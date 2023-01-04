@@ -20,7 +20,6 @@ jobs:
         with:
           name: iMW-woocommerce-custom-add-to-cart-button.zip
           path: iMW-woocommerce-custom-add-to-cart-button.zip
-      // comment the artifact link in the PR
       - name: Comment artifact link
         uses: peter-evans/create-or-update-comment@v1
         with:
