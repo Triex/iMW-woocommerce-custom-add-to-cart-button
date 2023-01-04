@@ -3,7 +3,7 @@
 [![Build status](https://img.shields.io/github/workflow/status/Triex/iMW-woocommerce-custom-add-to-cart-button)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/actions)
 [![GitHub release](https://img.shields.io/github/release/Triex/iMW-woocommerce-custom-add-to-cart-button.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/releases)
 [![GitHub issues](https://img.shields.io/github/issues/Triex/iMW-woocommerce-custom-add-to-cart-button.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/issues)
-[![GitHub license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://raw.githubusercontent.com/Triex/iMW-woocommerce-custom-add-to-cart-button/master/LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/blob/master/LICENSE)
 
 A WordPress plugin that adds a custom button to WooCommerce products which can replace the default add-to-cart button or be added as a second button.
 
