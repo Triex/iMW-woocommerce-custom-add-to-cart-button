@@ -11,7 +11,7 @@
  * Text Domain: iMW-woocommerce-custom-add-to-cart-button
  */
 
- // Github Repo: https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button
+// Github Repo: https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button
 
 if (!defined('ABSPATH')) {
     exit;
