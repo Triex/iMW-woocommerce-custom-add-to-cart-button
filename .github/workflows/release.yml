@@ -35,4 +35,9 @@ jobs:
           asset_path: ./iMW-woocommerce-custom-add-to-cart-button.zip
           asset_name: iMW-woocommerce-custom-add-to-cart-button.zip
           asset_content_type: application/zip
-
+      - name: Comment on PR
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Release available: ${{ steps.create_release.outputs.html_url }}
