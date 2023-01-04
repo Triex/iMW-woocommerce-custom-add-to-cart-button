@@ -5,7 +5,7 @@
  * Plugin URI: https://imakewebsites.co
  * Author: <a href="https://imakewebsites.co" target="_blank">Alex Zarov</a>
  * Description: Allows toggleable replacement of Woocommerce add to cart button with custom link/text, with custom styling and settings for each product.
- * Version: 0.3.6
+ * Version: 0.3.7
  * License: GPLv2
  * License URL: https://imakewebsites.co
  * Text Domain: iMW-woocommerce-custom-add-to-cart-button
@@ -57,6 +57,8 @@ function add_imw_custom_button_tab_options()
     $custom_button_border_hover_color = get_post_meta($post->ID, 'imw_custom_button_border_hover_color', true);
     // $custom_button_icon = get_post_meta($post->ID, 'imw_custom_button_icon', true);
     $replace_add_to_cart_toggle = get_post_meta($post->ID, 'imw_replace_add_to_cart_toggle', true);
+    $custom_button_archives_toggle = get_option('imw_custom_button_archives_toggle');
+    $hide_all_other_buttons_archive_toggle = get_option('imw_hide_all_other_buttons_archive_toggle');
 
 ?>
     <div id="imw_custom_button_options" class="panel woocommerce_options_panel">
@@ -92,6 +94,24 @@ function add_imw_custom_button_tab_options()
                 'desc_tip' => 'true',
                 'description' => __('Check to replace the Woocommerce add to cart button with the custom button.', 'woocommerce'),
                 'value' => $replace_add_to_cart_toggle,
+            ));
+
+            echo '<hr>';
+
+            woocommerce_wp_checkbox(array(
+                'id' => 'imw_custom_button_archives_toggle',
+                'label' => __('Show on Archives', 'woocommerce'),
+                'desc_tip' => 'true',
+                'description' => __('Check to show on archive pages, otherwise it will only show the defaults eg; "Add to Cart" / "Read More" etc.', 'woocommerce'),
+                'value' => $custom_button_archives_toggle,
+            ));
+
+            woocommerce_wp_checkbox(array(
+                'id' => 'imw_hide_all_other_buttons_archive_toggle',
+                'label' => __('Hide All Other Buttons', 'woocommerce'),
+                'desc_tip' => 'true',
+                'description' => __('Check to hide all other buttons on archive pages, otherwise it will continue to show the defaults eg; "Add to Cart" / "Read More" etc. Note: this is a global option, so it will update on all products.', 'woocommerce'),
+                'value' => $hide_all_other_buttons_archive_toggle,
             ));
 
             echo '<hr>';
@@ -199,6 +219,7 @@ function add_imw_custom_button_tab_options()
                         jQuery(this).iris("color", jQuery(this).val());
                     });
                     jQuery("#imw_custom_button_toggle_button_class").prop("checked", false);
+                    jQuery(#imw_open_in_new_tab").prop("checked", true);
                 }
             </script>';
 
@@ -363,6 +384,8 @@ function save_imw_custom_button_tab_options($post_id)
     $custom_button_border_radius = $_POST['imw_custom_button_border_radius'];
     $custom_button_border_thickness = $_POST['imw_custom_button_border_thickness'];
     $replace_add_to_cart_toggle = $_POST['imw_replace_add_to_cart_toggle'];
+    $custom_button_archives_toggle = $_POST['imw_custom_button_archives_toggle'];
+    $hide_all_other_buttons_archive_toggle = $_POST['imw_hide_all_other_buttons_archive_toggle'];
     update_post_meta($post_id, 'imw_custom_button_text', $custom_button_text);
     update_post_meta($post_id, 'imw_custom_button_link', $custom_button_link);
     update_post_meta($post_id, 'imw_custom_button_toggle', $custom_button_toggle);
@@ -382,6 +405,8 @@ function save_imw_custom_button_tab_options($post_id)
     update_post_meta($post_id, 'imw_custom_button_border_radius', $custom_button_border_radius);
     update_post_meta($post_id, 'imw_custom_button_border_thickness', $custom_button_border_thickness);
     update_post_meta($post_id, 'imw_replace_add_to_cart_toggle', $replace_add_to_cart_toggle);
+    update_option('imw_custom_button_archives_toggle', $custom_button_archives_toggle);
+    update_option('imw_hide_all_other_buttons_archive_toggle', $hide_all_other_buttons_archive_toggle);
 }
 
 //  * @hooked woocommerce_template_single_add_to_cart - 30 priority (make it higher priority here if using standard hooks)
@@ -389,6 +414,33 @@ function save_imw_custom_button_tab_options($post_id)
 // do actions
 add_action('imw_custom_button_action', 'imw_custom_button');
 // add_action('woocommerce_before_add_to_cart_button', 'imw_custom_button', 1, 2);
+
+add_action('woocommerce_after_shop_loop_item_title', 'imw_custom_button_archives');
+function imw_custom_button_archives()
+{
+    $custom_button_archives_toggle = get_option('imw_custom_button_archives_toggle');
+
+    delete_all_other_buttons();
+
+    if ($custom_button_archives_toggle == 'yes') {
+        add_action('woocommerce_after_shop_loop_item', 'imw_custom_button');
+    }
+}
+
+function delete_all_other_buttons()
+{
+    if (did_action('delete_all_other_buttons')) {
+        return;
+    }
+
+    $hide_all_other_buttons_archive_toggle = get_option('imw_hide_all_other_buttons_archive_toggle');
+    if ($hide_all_other_buttons_archive_toggle == 'yes') {
+        remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
+        remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_price', 10);
+        remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_rating', 10);
+    }
+}
+
 
 // create styles to enqueue (where we can enter the custom button / user defined styles)
 function imw_custom_button_style()
