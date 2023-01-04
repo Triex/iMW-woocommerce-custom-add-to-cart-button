@@ -1,13 +1,15 @@
-name: release
+name: pr-release
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  pull_request:
+    branches: [master]
 jobs:
   create-release:
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       contents: write
+      issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v2
       - name: Zip the folder
@@ -21,7 +23,7 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           release_name: Release ${{ github.ref_name }}
-          draft: false
+          draft: true
           prerelease: false
       - name: Upload Release Asset
         id: upload-release-asset
@@ -33,3 +35,9 @@ jobs:
           asset_path: ./iMW-woocommerce-custom-add-to-cart-button.zip
           asset_name: iMW-woocommerce-custom-add-to-cart-button.zip
           asset_content_type: application/zip
+      - name: Comment release link
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Release available for preview: ${{ steps.create_release.outputs.html_url }}
