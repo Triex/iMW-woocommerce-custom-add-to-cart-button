@@ -14,12 +14,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Zip the folder
         id: zip
-        run: zip -r iMW-woocommerce-custom-add-to-cart-button.zip iMW-woocommerce-custom-add-to-cart-button
+        run: zip -r iMW-woocommerce-custom-add-to-cart-button-${{ github.run_id }}.zip iMW-woocommerce-custom-add-to-cart-button
       - name: Save it as an artifact
         uses: actions/upload-artifact@v2
         with:
-          name: iMW-woocommerce-custom-add-to-cart-button.zip
-          path: iMW-woocommerce-custom-add-to-cart-button.zip
+          name: iMW-woocommerce-custom-add-to-cart-button-${{ github.run_id }}.zip
+          path: iMW-woocommerce-custom-add-to-cart-button-${{ github.run_id }}.zip
       - name: Comment artifact link
         uses: peter-evans/create-or-update-comment@v1
         with:
