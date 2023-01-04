@@ -200,7 +200,7 @@ function add_imw_custom_button_tab_options()
 
             echo '</div>';
 
-            // add the imwCustomButtonSetPlaceholderDefaults
+            // add the placeholder defaults script
             echo '<script>
                 function imwCustomButtonSetPlaceholderDefaults() {
                     jQuery("#imw_custom_button_text").val("Get the Book");
@@ -361,7 +361,6 @@ function add_imw_custom_button_tab_options()
 <?php
 }
 
-// save the custom button options
 add_action('woocommerce_process_product_meta', 'save_imw_custom_button_tab_options');
 function save_imw_custom_button_tab_options($post_id)
 {
@@ -420,16 +419,16 @@ function imw_custom_button_archives()
 {
     $custom_button_archives_toggle = get_option('imw_custom_button_archives_toggle');
 
-    delete_all_other_buttons();
+    hide_all_other_buttons();
 
     if ($custom_button_archives_toggle == 'yes') {
         add_action('woocommerce_after_shop_loop_item', 'imw_custom_button');
     }
 }
 
-function delete_all_other_buttons()
+function hide_all_other_buttons()
 {
-    if (did_action('delete_all_other_buttons')) {
+    if (did_action('hide_all_other_buttons')) {
         return;
     }
 
@@ -441,8 +440,6 @@ function delete_all_other_buttons()
     }
 }
 
-
-// create styles to enqueue (where we can enter the custom button / user defined styles)
 function imw_custom_button_style()
 {
     global $product;
