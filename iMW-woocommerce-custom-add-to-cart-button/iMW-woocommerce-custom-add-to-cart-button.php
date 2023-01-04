@@ -407,7 +407,7 @@ function imw_custom_button_style()
     $custom_button_border_radius = get_post_meta($product->get_id(), 'imw_custom_button_border_radius', true);
     $custom_button_border_thickness = get_post_meta($product->get_id(), 'imw_custom_button_border_thickness', true);
     $custom_button_style = "
-    .imw-custom-button {
+    .imw-custom-button-{$product->get_id()} {
         background-color: $custom_button_color;
         color: $custom_button_text_color;
         font-size: $custom_button_text_size;
@@ -419,7 +419,7 @@ function imw_custom_button_style()
         font-family: Gentium Book Basic;
         text-transform: uppercase;
     }
-    .imw-custom-button:hover {
+    .imw-custom-button-{$product->get_id()}:hover {
         background-color: $custom_button_hover_color;
         color: $custom_button_text_hover_color;
         border-color: $custom_button_border_hover_color;
@@ -446,7 +446,8 @@ function imw_custom_button()
         $custom_button_open_in_new_tab = get_post_meta($product->get_id(), 'imw_open_in_new_tab', true);
         $custom_button_toggle_button_class = get_post_meta($product->get_id(), 'imw_custom_button_toggle_button_class', true);
         $custom_button_custom_classes = get_post_meta($product->get_id(), 'imw_custom_button_custom_classes', true);
-        echo '<a href="' . $custom_button_link . '" class="btn imw-custom-button ' . ($custom_button_toggle_button_class == 'yes' ? 'button' : '') . ' ' . $custom_button_custom_classes . '" ' . ($custom_button_open_in_new_tab == 'yes' ? 'target="_blank"' : '') . '>' . $custom_button_text . '</a>';
+        echo '<a href="' . $custom_button_link . '" class="btn imw-custom-button-' . $product->get_id() . ($custom_button_toggle_button_class == 'yes' ? 'button' : '') . ' ' . $custom_button_custom_classes . '" ' . ($custom_button_open_in_new_tab == 'yes' ? 'target="_blank"' : '') . '>' . $custom_button_text . '</a>';
+
         // if ($replace_add_to_cart_toggle == 'yes') {
         //     echo '<style>.single_add_to_cart_button {display: none;}</style>';
         // // done in single-product/add-to-cart/simple.php
