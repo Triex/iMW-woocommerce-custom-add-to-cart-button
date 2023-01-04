@@ -57,6 +57,16 @@ git push --tags
 
 When a tag is pushed, the release will be zipped and uploaded to the [releases page](https://github.com/Triex/iMW-woocommerce-custom-add-to-cart-button/releases).
 
+## Testing
+
+### Semgrep Security Analysis
+
+To test semgrep locally via docker, `cd` in to the root directory and run:
+
+```
+docker run -v "$(pwd)":/src -e SEMGREP_RULES=p/default returntocorp/semgrep semgrep ci
+```
+
 -----
 
 ## Licence
