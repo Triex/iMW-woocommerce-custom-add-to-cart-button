@@ -5,7 +5,7 @@
  * Plugin URI: https://imakewebsites.co
  * Author: <a href="https://imakewebsites.co" target="_blank">Alex Zarov</a>
  * Description: Allows toggleable replacement of Woocommerce add to cart button with custom link/text, with custom styling and settings for each product.
- * Version: 0.3.7
+ * Version: 0.3.8
  * License: GPLv2
  * License URL: https://imakewebsites.co
  * Text Domain: iMW-woocommerce-custom-add-to-cart-button
@@ -457,21 +457,48 @@ function imw_custom_button_style()
     $custom_button_border_thickness = get_post_meta($product->get_id(), 'imw_custom_button_border_thickness', true);
     $custom_button_style = "
     .imw-custom-button-{$product->get_id()} {
-        background-color: $custom_button_color;
-        color: $custom_button_text_color;
-        font-size: $custom_button_text_size;
-        line-height: $custom_button_line_height;
-        padding: $custom_button_padding_topbottom $custom_button_padding_leftright;
-        border-radius: $custom_button_border_radius;
-        border: $custom_button_border_thickness solid $custom_button_border_color;
-        text-decoration: none;
-        font-family: Gentium Book Basic;
-        text-transform: uppercase;
+    display: inline-block;
+    background-color: $custom_button_color;
+    color: $custom_button_text_color;
+    font-size: $custom_button_text_size;
+    line-height: $custom_button_line_height;
+    padding: $custom_button_padding_topbottom $custom_button_padding_leftright;
+    border-radius: $custom_button_border_radius;
+    border: $custom_button_border_thickness solid $custom_button_border_color;
+    text-decoration: none;
+    font-family: Gentium Book Basic;
+    text-transform: uppercase;
+    }
+    ul.products .imw-custom-button-{$product->get_id()} {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
     }
     .imw-custom-button-{$product->get_id()}:hover {
         background-color: $custom_button_hover_color;
         color: $custom_button_text_hover_color;
         border-color: $custom_button_border_hover_color;
+    }
+
+    @media only screen and (max-width: 768px) {
+        .imw-custom-button-{$product->get_id()} {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+    }
+    @media only screen and (max-width: 480px) {
+        .imw-custom-button-{$product->get_id()} {
+            width: calc(100% - 20px);
+            margin-left: 10px;
+        }
+    }
+    @media only screen and (max-width: 320px) {
+        .imw-custom-button-{$product->get_id()} {
+            width: calc(100% - 30px);
+            margin-left: 15px;
+        }
     }
     ";
     return $custom_button_style;
