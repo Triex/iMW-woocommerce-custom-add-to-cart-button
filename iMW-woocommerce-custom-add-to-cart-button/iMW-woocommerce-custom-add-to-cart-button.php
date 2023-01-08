@@ -5,7 +5,7 @@
  * Plugin URI: https://imakewebsites.co
  * Author: <a href="https://imakewebsites.co" target="_blank">Alex Zarov</a>
  * Description: Allows toggleable replacement of Woocommerce add to cart button with custom link/text, with custom styling and settings for each product.
- * Version: 0.3.8
+ * Version: 0.3.9
  * License: GPLv2
  * License URL: https://imakewebsites.co
  * Text Domain: iMW-woocommerce-custom-add-to-cart-button
@@ -34,8 +34,6 @@ function add_imw_custom_button_tab($tabs)
 add_action('woocommerce_product_data_panels', 'add_imw_custom_button_tab_options');
 function add_imw_custom_button_tab_options()
 {
-    add_action('wp_enqueue_scripts', 'imw_custom_button_style');
-
     global $post;
     $custom_button_text = get_post_meta($post->ID, 'imw_custom_button_text', true);
     $custom_button_link = get_post_meta($post->ID, 'imw_custom_button_link', true);
@@ -219,7 +217,113 @@ function add_imw_custom_button_tab_options()
                         jQuery(this).iris("color", jQuery(this).val());
                     });
                     jQuery("#imw_custom_button_toggle_button_class").prop("checked", false);
-                    jQuery(#imw_open_in_new_tab").prop("checked", true);
+                    jQuery("#imw_open_in_new_tab").prop("checked", true);
+
+                    // now update the preview button styles:
+                    jQuery(".imw-custom-button").css("background-color", jQuery("#imw_custom_button_color").val());
+                    jQuery(".imw-custom-button").css("color", jQuery("#imw_custom_button_text_color").val());
+                    jQuery(".imw-custom-button").css("font-size", jQuery("#imw_custom_button_text_size").val());
+                    jQuery(".imw-custom-button").css("border-radius", jQuery("#imw_custom_button_border_radius").val());
+                    jQuery(".imw-custom-button").css("padding", jQuery("#imw_custom_button_padding_topbottom").val() + " " + jQuery("#imw_custom_button_padding_leftright").val());
+                    jQuery(".imw-custom-button").css("font-weight", "600");
+                    jQuery(".imw-custom-button").css("letter-spacing", "0.05em");
+                    jQuery(".imw-custom-button").css("text-transform", "uppercase");
+                    jQuery(".imw-custom-button").css("font-family", "Gentium Book Basic");
+                    jQuery(".imw-custom-button").css("margin-top", "10px");
+                    jQuery(".imw-custom-button").css("margin-left", "10px");
+                    jQuery(".imw-custom-button").css("margin-right", "4px");
+                    jQuery(".imw-custom-button").css("text-decoration", "none");
+                    jQuery(".imw-custom-button").css("font-family", "Gentium Book Basic");
+                    jQuery(".imw-custom-button").css("text-transform", "uppercase");
+                    jQuery(".imw-custom-button").css("line-height", jQuery("#imw_custom_button_line_height").val());
+                    jQuery(".imw-custom-button").css("border", jQuery("#imw_custom_button_border_thickness").val() + " solid " + jQuery("#imw_custom_button_border_color").val());
+                    jQuery(".imw-custom-button").css("display", "inline-block");
+                    jQuery(".imw-custom-button").css("cursor", "pointer");
+                    jQuery(".imw-custom-button").css("transition", "all 0.2s ease-in-out");
+                    jQuery(".imw-custom-button").css("text-align", "center");
+                    jQuery(".imw-custom-button").css("vertical-align", "middle");
+                    jQuery(".imw-custom-button").css("white-space", "nowrap");
+                    jQuery(".imw-custom-button").css("border-radius", jQuery("#imw_custom_button_border_radius").val());
+                    // update the button text
+                    jQuery(".imw-custom-button").html(jQuery("#imw_custom_button_text").val());
+                    // add the hover styles
+                    jQuery(".imw-custom-button").hover(function() {
+                        jQuery(this).css("background-color", jQuery("#imw_custom_button_hover_color").val());
+                        jQuery(this).css("color", jQuery("#imw_custom_button_text_hover_color").val());
+                        jQuery(this).css("border", jQuery("#imw_custom_button_border_thickness").val() + " solid " + jQuery("#imw_custom_button_border_hover_color").val());
+                    }, function() {
+                        jQuery(this).css("background-color", jQuery("#imw_custom_button_color").val());
+                        jQuery(this).css("color", jQuery("#imw_custom_button_text_color").val());
+                        jQuery(this).css("border", jQuery("#imw_custom_button_border_thickness").val() + " solid " + jQuery("#imw_custom_button_border_color").val());
+                    });
+                }
+                function imw_custom_button_admin_preview() {
+                  var buttonColor = document.getElementById(
+                    "imw_custom_button_color"
+                  ).value;
+                  var buttonHoverColor = document.getElementById(
+                    "imw_custom_button_hover_color"
+                  ).value;
+                  var buttonTextColor = document.getElementById(
+                    "imw_custom_button_text_color"
+                  ).value;
+                  var buttonTextHoverColor = document.getElementById(
+                    "imw_custom_button_text_hover_color"
+                  ).value;
+                  var buttonBorderColor = document.getElementById(
+                    "imw_custom_button_border_color"
+                  ).value;
+                  var buttonBorderHoverColor = document.getElementById(
+                    "imw_custom_button_border_hover_color"
+                  ).value;
+                  var buttonTextSize = document.getElementById(
+                    "imw_custom_button_text_size"
+                  ).value;
+                  var buttonLineHeight = document.getElementById(
+                    "imw_custom_button_line_height"
+                  ).value;
+                  var buttonPaddingTopBottom = document.getElementById(
+                    "imw_custom_button_padding_topbottom"
+                  ).value;
+                  var buttonPaddingLeftRight = document.getElementById(
+                    "imw_custom_button_padding_leftright"
+                  ).value;
+                  var buttonBorderRadius = document.getElementById(
+                    "imw_custom_button_border_radius"
+                  ).value;
+                  var buttonBorderThickness = document.getElementById(
+                    "imw_custom_button_border_thickness"
+                  ).value;
+                  var buttonPreview = document.getElementById(
+                    "imw-custom-button-preview"
+                  );
+                  buttonPreview.style.backgroundColor = buttonColor;
+                  buttonPreview.style.color = buttonTextColor;
+                  buttonPreview.style.fontSize = buttonTextSize;
+                  buttonPreview.style.borderRadius = buttonBorderRadius;
+                  buttonPreview.style.padding =
+                    buttonPaddingTopBottom + " " + buttonPaddingLeftRight;
+                  buttonPreview.style.fontWeight = "600";
+                  buttonPreview.style.letterSpacing = "0.05em";
+                  buttonPreview.style.textTransform = "uppercase";
+                  buttonPreview.style.fontFamily = "Gentium Book Basic";
+                  buttonPreview.style.border =
+                    buttonBorderThickness + " solid " + buttonBorderColor;
+                  buttonPreview.style.lineHeight = buttonLineHeight;
+                  buttonPreview.onmouseover = function () {
+                    buttonPreview.style.backgroundColor = buttonHoverColor;
+                    buttonPreview.style.color = buttonTextHoverColor;
+                    buttonPreview.style.border =
+                      buttonBorderThickness +
+                      " solid " +
+                      buttonBorderHoverColor;
+                  };
+                  buttonPreview.onmouseout = function () {
+                    buttonPreview.style.backgroundColor = buttonColor;
+                    buttonPreview.style.color = buttonTextColor;
+                    buttonPreview.style.border =
+                      buttonBorderThickness + " solid " + buttonBorderColor;
+                  };
                 }
             </script>';
 
@@ -349,8 +453,9 @@ function add_imw_custom_button_tab_options()
 
             echo '<hr>';
             // preview
-            echo '<h3 style="margin-left:10px;">Preview (after save)</h3>';
-            echo '<a href="' . $custom_button_link . '" class="imw-custom-button" style="background-color: ' . $custom_button_color . '; color: ' . $custom_button_text_color . '; font-size: ' . $custom_button_text_size . '; border-radius: ' . $custom_button_border_radius . '; padding: ' . $custom_button_padding_topbottom . ' ' . $custom_button_padding_leftright . '; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-family: Gentium Book Basic; margin-top: 10px; margin-left: 10px; margin-right: 4px; text-decoration: none; font-family: Gentium Book Basic; text-transform: uppercase; line-height: ' . $custom_button_line_height . '; border: ' . $custom_button_border_thickness . ' solid ' . $custom_button_border_color . ';" ' . ($custom_button_open_in_new_tab == 'yes' ? 'target="_blank"' : '') . ' onmouseover="this.style.backgroundColor=\'' . $custom_button_hover_color . '\'; this.style.color=\'' . $custom_button_text_hover_color . '\'; this.style.borderColor=\'' . $custom_button_border_hover_color . '\';" onmouseout="this.style.backgroundColor=\'' . $custom_button_color . '\'; this.style.color=\'' . $custom_button_text_color . '\'; this.style.borderColor=\'' . $custom_button_border_color . '\';">' . $custom_button_text . '</a>';
+            echo
+            '<h3 id="imw_update_preview_button" onclick="imw_custom_button_admin_preview()" style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px; padding: 10px; background-color: #f1f1f1; border: 1px solid #e1e1e1; border-radius: 3px; cursor: pointer;">Click To Update Preview</h3>';
+            echo '<a href="' . $custom_button_link . '" id="imw-custom-button-preview" class="imw-custom-button" style="background-color: ' . $custom_button_color . '; color: ' . $custom_button_text_color . '; font-size: ' . $custom_button_text_size . '; border-radius: ' . $custom_button_border_radius . '; padding: ' . $custom_button_padding_topbottom . ' ' . $custom_button_padding_leftright . '; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-family: Gentium Book Basic; margin-top: 10px; margin-left: 10px; margin-right: 4px; text-decoration: none; font-family: Gentium Book Basic; text-transform: uppercase; line-height: ' . $custom_button_line_height . '; border: ' . $custom_button_border_thickness . ' solid ' . $custom_button_border_color . ';" ' . ($custom_button_open_in_new_tab == 'yes' ? 'target="_blank"' : '') . ' onmouseover="this.style.backgroundColor=\'' . $custom_button_hover_color . '\'; this.style.color=\'' . $custom_button_text_hover_color . '\'; this.style.borderColor=\'' . $custom_button_border_hover_color . '\';" onmouseout="this.style.backgroundColor=\'' . $custom_button_color . '\'; this.style.color=\'' . $custom_button_text_color . '\'; this.style.borderColor=\'' . $custom_button_border_color . '\';">' . $custom_button_text . '</a>';
             echo '<hr style="margin-top: 25px;">';
 
             echo '<button type="submit" class="button button-primary button-large" name="save">Save</button>';
@@ -420,8 +525,7 @@ function imw_custom_button_archives()
     $custom_button_archives_toggle = get_option('imw_custom_button_archives_toggle');
 
     hide_all_other_buttons();
-
-    if ($custom_button_archives_toggle == 'yes') {
+    if ($custom_button_archives_toggle == 'yes' && !is_admin()) {
         add_action('woocommerce_after_shop_loop_item', 'imw_custom_button');
     }
 }
@@ -433,7 +537,8 @@ function hide_all_other_buttons()
     }
 
     $hide_all_other_buttons_archive_toggle = get_option('imw_hide_all_other_buttons_archive_toggle');
-    if ($hide_all_other_buttons_archive_toggle == 'yes') {
+    // if not admin page && hide all other buttons is enabled
+    if ($hide_all_other_buttons_archive_toggle == 'yes' && !is_admin()) {
         remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
         remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_price', 10);
         remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_rating', 10);
@@ -442,6 +547,7 @@ function hide_all_other_buttons()
 
 function imw_custom_button_style()
 {
+    // if is_admin `get_post_meta($product->get_id()` should return "preview"
     global $product;
     $custom_button_color = get_post_meta($product->get_id(), 'imw_custom_button_color', true);
     $custom_button_text_color = get_post_meta($product->get_id(), 'imw_custom_button_text_color', true);
@@ -456,50 +562,50 @@ function imw_custom_button_style()
     $custom_button_border_radius = get_post_meta($product->get_id(), 'imw_custom_button_border_radius', true);
     $custom_button_border_thickness = get_post_meta($product->get_id(), 'imw_custom_button_border_thickness', true);
     $custom_button_style = "
-    .imw-custom-button-{$product->get_id()} {
-    display: inline-block;
-    background-color: $custom_button_color;
-    color: $custom_button_text_color;
-    font-size: $custom_button_text_size;
-    line-height: $custom_button_line_height;
-    padding: $custom_button_padding_topbottom $custom_button_padding_leftright;
-    border-radius: $custom_button_border_radius;
-    border: $custom_button_border_thickness solid $custom_button_border_color;
-    text-decoration: none;
-    font-family: Gentium Book Basic;
-    text-transform: uppercase;
-    }
-    ul.products .imw-custom-button-{$product->get_id()} {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        width: 100%;
-    }
-    .imw-custom-button-{$product->get_id()}:hover {
-        background-color: $custom_button_hover_color;
-        color: $custom_button_text_hover_color;
-        border-color: $custom_button_border_hover_color;
-    }
+      .imw-custom-button-{$product->get_id()} {
+      display: inline-block;
+      background-color: $custom_button_color;
+      color: $custom_button_text_color;
+      font-size: $custom_button_text_size;
+      line-height: $custom_button_line_height;
+      padding: $custom_button_padding_topbottom $custom_button_padding_leftright;
+      border-radius: $custom_button_border_radius;
+      border: $custom_button_border_thickness solid $custom_button_border_color;
+      text-decoration: none;
+      font-family: Gentium Book Basic;
+      text-transform: uppercase;
+      }
+      ul.products .imw-custom-button-{$product->get_id()} {
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+          width: 100%;
+      }
+      .imw-custom-button-{$product->get_id()}:hover {
+          background-color: $custom_button_hover_color;
+          color: $custom_button_text_hover_color;
+          border-color: $custom_button_border_hover_color;
+      }
 
-    @media only screen and (max-width: 768px) {
-        .imw-custom-button-{$product->get_id()} {
-            width: 100%;
-            margin-bottom: 15px;
-        }
-    }
-    @media only screen and (max-width: 480px) {
-        .imw-custom-button-{$product->get_id()} {
-            width: calc(100% - 20px);
-            margin-left: 10px;
-        }
-    }
-    @media only screen and (max-width: 320px) {
-        .imw-custom-button-{$product->get_id()} {
-            width: calc(100% - 30px);
-            margin-left: 15px;
-        }
-    }
+      @media only screen and (max-width: 768px) {
+          .imw-custom-button-{$product->get_id()} {
+              width: 100%;
+              margin-bottom: 15px;
+          }
+      }
+      @media only screen and (max-width: 480px) {
+          .imw-custom-button-{$product->get_id()} {
+              width: calc(100% - 20px);
+              margin-left: 10px;
+          }
+      }
+      @media only screen and (max-width: 320px) {
+          .imw-custom-button-{$product->get_id()} {
+              width: calc(100% - 30px);
+              margin-left: 15px;
+          }
+      }
     ";
     return $custom_button_style;
 }
