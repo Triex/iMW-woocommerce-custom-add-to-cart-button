@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - 'v*.*.*'
+      - '!**/merge'
 jobs:
   create-release:
     runs-on: ubuntu-latest
