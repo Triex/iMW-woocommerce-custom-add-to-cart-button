@@ -577,6 +577,10 @@ function imw_custom_button_init()
     if (is_woocommerce() && !is_admin() && !is_cart() && !is_checkout()) {
         if (is_product()) {
             global $post;
+            $replace_add_to_cart_toggle = get_post_meta($post->ID, 'imw_replace_add_to_cart_toggle', true);
+            if ($replace_add_to_cart_toggle == 'yes') {
+                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
+            }
             $custom_button_hook_action = get_post_meta($post->ID, 'imw_custom_button_hook_action', true);
             $custom_button_hook_text = get_post_meta($post->ID, 'imw_custom_button_hook_text', true);
             $custom_button_toggle = get_post_meta($post->ID, 'imw_custom_button_toggle', true);
