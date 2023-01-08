@@ -582,6 +582,9 @@ function imw_custom_button_init()
             $custom_button_toggle = get_post_meta($post->ID, 'imw_custom_button_toggle', true);
 
             if ($custom_button_toggle == 'yes') {
+                if ($custom_button_hook_action == '' || $custom_button_hook_action == null) {
+                    $custom_button_hook_action = 'imw_custom_button_action';
+                }
                 if ($custom_button_hook_action == 'custom_hook_name') {
                     add_action($custom_button_hook_text, 'imw_custom_button');
                 } else {
