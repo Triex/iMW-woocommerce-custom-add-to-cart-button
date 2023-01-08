@@ -5,7 +5,7 @@
  * Plugin URI: https://imakewebsites.co
  * Author: <a href="https://imakewebsites.co" target="_blank">Alex Zarov</a>
  * Description: Allows toggleable replacement of Woocommerce add to cart button with custom link/text, with custom styling and settings for each product.
- * Version: 0.3.9
+ * Version: 0.4.0
  * License: GPLv2
  * License URL: https://imakewebsites.co
  * Text Domain: iMW-woocommerce-custom-add-to-cart-button
@@ -30,11 +30,12 @@ function add_imw_custom_button_tab($tabs)
     return $tabs;
 }
 
-
 add_action('woocommerce_product_data_panels', 'add_imw_custom_button_tab_options');
 function add_imw_custom_button_tab_options()
 {
     global $post;
+    $custom_button_hook_action = get_post_meta($post->ID, 'imw_custom_button_hook_action', true);
+    $custom_button_hook_text = get_post_meta($post->ID, 'imw_custom_button_hook_text', true);
     $custom_button_text = get_post_meta($post->ID, 'imw_custom_button_text', true);
     $custom_button_link = get_post_meta($post->ID, 'imw_custom_button_link', true);
     $custom_button_toggle = get_post_meta($post->ID, 'imw_custom_button_toggle', true);
@@ -54,6 +55,7 @@ function add_imw_custom_button_tab_options()
     $custom_button_border_thickness = get_post_meta($post->ID, 'imw_custom_button_border_thickness', true);
     $custom_button_border_hover_color = get_post_meta($post->ID, 'imw_custom_button_border_hover_color', true);
     // $custom_button_icon = get_post_meta($post->ID, 'imw_custom_button_icon', true);
+    // $custom_button_icon_toggle = get_post_meta($post->ID, 'imw_custom_button_icon_toggle', true);
     $replace_add_to_cart_toggle = get_post_meta($post->ID, 'imw_replace_add_to_cart_toggle', true);
     $custom_button_archives_toggle = get_option('imw_custom_button_archives_toggle');
     $hide_all_other_buttons_archive_toggle = get_option('imw_hide_all_other_buttons_archive_toggle');
@@ -93,6 +95,50 @@ function add_imw_custom_button_tab_options()
                 'description' => __('Check to replace the Woocommerce add to cart button with the custom button.', 'woocommerce'),
                 'value' => $replace_add_to_cart_toggle,
             ));
+
+            // TODO: should add some form of visual reference.
+            // Visual guide for hooks: https://rudrastyh.com/woocommerce/before-and-after-add-to-cart.html#single_product_page
+            woocommerce_wp_select(array(
+                'id' => 'imw_custom_button_hook_action',
+                'label' => __('Custom Button Hook', 'woocommerce'),
+                'desc_tip' => 'true',
+                'description' => __("Choose the hook you want to use for the custom button. Defaults to `imw_custom_button_action`, which you need to add to your child theme. eg: `do_action('imw_custom_button_action');`. Alternatively enter a custom hook, or choose one of the standard `woocommerce_add_to_cart` hooks below.", "woocommerce"),
+                'options' => array(
+                    'imw_custom_button_action' => 'imw_custom_button_action',
+                    'woocommerce_before_add_to_cart_button' => 'woocommerce_before_add_to_cart_button',
+                    'woocommerce_after_add_to_cart_button' => 'woocommerce_after_add_to_cart_button',
+                    'woocommerce_after_add_to_cart_quantity' => 'woocommerce_after_add_to_cart_quantity',
+                    'woocommerce_before_add_to_cart_quantity' => 'woocommerce_before_add_to_cart_quantity',
+                    'woocommerce_before_add_to_cart_form' => 'woocommerce_before_add_to_cart_form',
+                    'woocommerce_after_add_to_cart_form' => 'woocommerce_after_add_to_cart_form',
+                    'custom_hook_name' => 'custom_hook_name',
+                ),
+                'value' => $custom_button_hook_action,
+            ));
+
+            woocommerce_wp_text_input(array(
+                'id' => 'imw_custom_button_hook_text',
+                'label' => __('Custom Hook Name', 'woocommerce'),
+                'placeholder' => 'my_custom_hook',
+                'desc_tip' => 'true',
+                'description' => __('Enter the name of the hook you want to use. eg; `woocommerce_before_add_to_cart_button`', 'woocommerce'),
+                'value' => $custom_button_hook_text,
+            ));
+
+            echo '<script type="text/javascript">
+                jQuery(document).ready(function($) {
+                    $("#imw_custom_button_hook_text").hide();
+                });
+                jQuery(document).ready(function($) {
+                    $("#imw_custom_button_hook_action").change(function() {
+                        if ($(this).val() == "custom_hook_name") {
+                            $("#imw_custom_button_hook_text").show();
+                        } else {
+                            $("#imw_custom_button_hook_text").hide();
+                        }
+                    });
+                });
+            </script>';
 
             echo '<hr>';
 
@@ -218,6 +264,7 @@ function add_imw_custom_button_tab_options()
                     });
                     jQuery("#imw_custom_button_toggle_button_class").prop("checked", false);
                     jQuery("#imw_open_in_new_tab").prop("checked", true);
+                    jQuery("#imw_custom_button_hook_action").val("imw_custom_button_action");
 
                     // now update the preview button styles:
                     jQuery(".imw-custom-button").css("background-color", jQuery("#imw_custom_button_color").val());
@@ -469,6 +516,8 @@ function add_imw_custom_button_tab_options()
 add_action('woocommerce_process_product_meta', 'save_imw_custom_button_tab_options');
 function save_imw_custom_button_tab_options($post_id)
 {
+    $custom_button_hook_action = $_POST['imw_custom_button_hook_action'];
+    $custom_button_hook_text = $_POST['imw_custom_button_hook_text'];
     $custom_button_text = $_POST['imw_custom_button_text'];
     $custom_button_link = $_POST['imw_custom_button_link'];
     $custom_button_toggle = $_POST['imw_custom_button_toggle'];
@@ -490,6 +539,8 @@ function save_imw_custom_button_tab_options($post_id)
     $replace_add_to_cart_toggle = $_POST['imw_replace_add_to_cart_toggle'];
     $custom_button_archives_toggle = $_POST['imw_custom_button_archives_toggle'];
     $hide_all_other_buttons_archive_toggle = $_POST['imw_hide_all_other_buttons_archive_toggle'];
+    update_post_meta($post_id, 'imw_custom_button_hook_action', $custom_button_hook_action);
+    update_post_meta($post_id, 'imw_custom_button_hook_text', $custom_button_hook_text);
     update_post_meta($post_id, 'imw_custom_button_text', $custom_button_text);
     update_post_meta($post_id, 'imw_custom_button_link', $custom_button_link);
     update_post_meta($post_id, 'imw_custom_button_toggle', $custom_button_toggle);
@@ -516,7 +567,28 @@ function save_imw_custom_button_tab_options($post_id)
 //  * @hooked woocommerce_template_single_add_to_cart - 30 priority (make it higher priority here if using standard hooks)
 
 // do actions
-add_action('imw_custom_button_action', 'imw_custom_button');
+
+add_action('wp', 'imw_custom_button_init');
+function imw_custom_button_init()
+{
+    if (is_woocommerce() && !is_admin() && !is_cart() && !is_checkout()) {
+        if (is_product()) {
+            global $post;
+            $custom_button_hook_action = get_post_meta($post->ID, 'imw_custom_button_hook_action', true);
+            $custom_button_hook_text = get_post_meta($post->ID, 'imw_custom_button_hook_text', true);
+            $custom_button_toggle = get_post_meta($post->ID, 'imw_custom_button_toggle', true);
+
+            if ($custom_button_toggle == 'yes') {
+                if ($custom_button_hook_action == 'custom_hook_name') {
+                    add_action($custom_button_hook_text, 'imw_custom_button');
+                } else {
+                    add_action('imw_custom_button_action', 'imw_custom_button');
+                }
+            }
+        }
+    }
+}
+
 // add_action('woocommerce_before_add_to_cart_button', 'imw_custom_button', 1, 2);
 
 add_action('woocommerce_after_shop_loop_item_title', 'imw_custom_button_archives');
