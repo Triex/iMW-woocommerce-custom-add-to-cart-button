@@ -5,7 +5,7 @@
  * Plugin URI: https://imakewebsites.co
  * Author: <a href="https://imakewebsites.co" target="_blank">Alex Zarov</a>
  * Description: Allows toggleable replacement of Woocommerce add to cart button with custom link/text, with custom styling and settings for each product.
- * Version: 0.4.1
+ * Version: 0.4.2
  * License: GPLv2
  * License URL: https://imakewebsites.co
  * Text Domain: iMW-woocommerce-custom-add-to-cart-button
@@ -102,7 +102,7 @@ function add_imw_custom_button_tab_options()
                 'id' => 'imw_replace_add_to_cart_toggle',
                 'label' => __('Hide Add To Cart Button', 'woocommerce'),
                 'desc_tip' => 'true',
-                'description' => __('Check to replace the Woocommerce add to cart button with the custom button.', 'woocommerce'),
+                'description' => __('Check to replace the Woocommerce add to cart button (and quantity etc) with the custom button.', 'woocommerce'),
                 'value' => $replace_add_to_cart_toggle,
             ));
 
