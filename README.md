@@ -9,7 +9,7 @@ A WordPress plugin that adds a custom button to WooCommerce products which can r
 
 - Works even when products have no stock levels or price set
 - Made for use with Odrin Theme, ~~but could work with others (not tested).~~
-- `0.4.0` now allows for targeting any `woocommerce_add_to_cart` hook, or a custom hook : should be psosible to make it work with most themes.
+  - Since `0.4.0`: allows for targeting any `woocommerce_add_to_cart` hook, or a custom hook - should be possible to make it work with any theme
 
 _Note: The default styles are designed to match the site it was intended for._
 
