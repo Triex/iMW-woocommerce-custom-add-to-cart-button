@@ -82,6 +82,16 @@ function add_imw_custom_button_tab_options()
                 'value' => $custom_button_link,
             ));
             woocommerce_wp_checkbox(array(
+                'id' => 'imw_open_in_new_tab',
+                'label' => __('Open in New Tab', 'woocommerce'),
+                'desc_tip' => 'true',
+                'description' => __('Check to open link in new tab.', 'woocommerce'),
+                'value' => $custom_button_open_in_new_tab,
+            ));
+
+            echo '<hr>';
+
+            woocommerce_wp_checkbox(array(
                 'id' => 'imw_custom_button_toggle',
                 'label' => __('Toggle Custom Button', 'woocommerce'),
                 'desc_tip' => 'true',
@@ -127,14 +137,14 @@ function add_imw_custom_button_tab_options()
 
             echo '<script type="text/javascript">
                 jQuery(document).ready(function($) {
-                    $("#imw_custom_button_hook_text").hide();
+                    $(".imw_custom_button_hook_text_field").hide();
                 });
                 jQuery(document).ready(function($) {
                     $("#imw_custom_button_hook_action").change(function() {
                         if ($(this).val() == "custom_hook_name") {
-                            $("#imw_custom_button_hook_text").show();
+                            $(".imw_custom_button_hook_text_field").show();
                         } else {
-                            $("#imw_custom_button_hook_text").hide();
+                            $(".imw_custom_button_hook_text_field").hide();
                         }
                     });
                 });
@@ -160,13 +170,6 @@ function add_imw_custom_button_tab_options()
 
             echo '<hr>';
 
-            woocommerce_wp_checkbox(array(
-                'id' => 'imw_open_in_new_tab',
-                'label' => __('Open in New Tab', 'woocommerce'),
-                'desc_tip' => 'true',
-                'description' => __('Check to open link in new tab.', 'woocommerce'),
-                'value' => $custom_button_open_in_new_tab,
-            ));
             echo '<p>Note: You must enter all styles (radius optional), or override them by toggling the `button` class - for it to render correctly.</p>';
             woocommerce_wp_checkbox(array(
                 'id' => 'imw_custom_button_toggle_button_class',
