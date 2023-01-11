@@ -10,6 +10,7 @@ A WordPress plugin that adds a custom button to WooCommerce products which can r
 - Works even when products have no stock levels or price set
 - Made for use with Odrin Theme, ~~but could work with others (not tested).~~
   - Since `0.4.0`: allows for targeting any `woocommerce_single_product_summary` loop hook, or a custom hook - should be possible to make it work with any theme
+  - Since `0.5.0`: added preset styles options, button preview on product edit pages now updates dynamically
 
 _Note: The default styles are designed to match the site it was intended for._
 
