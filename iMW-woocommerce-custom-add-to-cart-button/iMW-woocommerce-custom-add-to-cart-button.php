@@ -5,7 +5,7 @@
  * Plugin URI: https://imakewebsites.co
  * Author: <a href="https://imakewebsites.co" target="_blank">Alex Zarov</a>
  * Description: Allows toggleable replacement of Woocommerce add to cart button with custom link/text, with custom styling and settings for each product.
- * Version: 0.4.2
+ * Version: 0.5.0
  * License: GPLv2
  * License URL: https://imakewebsites.co
  * Text Domain: iMW-woocommerce-custom-add-to-cart-button
@@ -19,7 +19,6 @@ if (!defined('ABSPATH')) {
 
 // This plugin allows us to set a custom button, styles, text and link for each product - even if it has no price.
 
-add_filter('woocommerce_product_data_tabs', 'add_imw_custom_button_tab');
 function add_imw_custom_button_tab($tabs)
 {
     $tabs['custom_button'] = array(
@@ -29,8 +28,12 @@ function add_imw_custom_button_tab($tabs)
     );
     return $tabs;
 }
+add_filter('woocommerce_product_data_tabs', 'add_imw_custom_button_tab');
 
-add_action('woocommerce_product_data_panels', 'add_imw_custom_button_tab_options');
+/**
+ * Adds custom button options to product pages (input fields, button preview, and scripts)
+ * @todo: Tidy / optimise the jQuery-inline JS
+ */
 function add_imw_custom_button_tab_options()
 {
     global $post;
@@ -159,7 +162,6 @@ function add_imw_custom_button_tab_options()
                 'description' => __('Check to show on archive pages, otherwise it will only show the defaults eg; "Add to Cart" / "Read More" etc.', 'woocommerce'),
                 'value' => $custom_button_archives_toggle,
             ));
-
             woocommerce_wp_checkbox(array(
                 'id' => 'imw_hide_all_other_buttons_archive_toggle',
                 'label' => __('Hide All Other Buttons', 'woocommerce'),
@@ -182,7 +184,7 @@ function add_imw_custom_button_tab_options()
                 'label' => __('Custom Classes', 'woocommerce'),
                 'placeholder' => '',
                 'desc_tip' => 'true',
-                'description' => __('Enter custom classes for the button. (Unfortunately even if ticked; the preview below will not show Woocommerce page styles)', 'woocommerce'),
+                'description' => __('Enter custom classes for the button. (Note even if ticked; the preview below may not show, as Woocommerce/WP page styles dont load on the admin page)', 'woocommerce'),
                 'value' => $custom_button_custom_classes,
             ));
 
@@ -241,14 +243,176 @@ function add_imw_custom_button_tab_options()
 
             echo
             '<div style="padding-bottom: 10px; display: block; margin: 0 auto; width: fit-content;">';
-            // button to fill in all fields with their placeholder values
+            // 'buttons' to fill in all fields with their placeholder values, and to show/hide the preset styles
             echo '<span id="imw-custom-button-set-placeholder-defaults" onclick="imwCustomButtonSetPlaceholderDefaults()" style="cursor:pointer; text-decoration:underline; color: #2271b1;">Auto-set Defaults</span>';
             echo '<span class="woocommerce-help-tip" data-tip="This button will fill in the `Button Text`, and all the fields below with their default values."></span>';
-
+            echo '<span id="imw-custom-button-show-hide-placeholder-styles-buttons" onclick="imwShowHidePlaceholderStylesButtons()" style="cursor:pointer; text-decoration:underline; color: #2271b1; margin-left: 10px;">Show Preset Styles</span>';
+            echo '<span class="woocommerce-help-tip" data-tip="This button will show/hide the `Preset Placeholder Styles` buttons below."></span>';
             echo '</div>';
 
-            // add the placeholder defaults script
+            echo '<div id="placeholder-styles-buttons" style="display: flex; flex-wrap: wrap; justify-content: space-around; margin-top: 10px; margin-bottom: 20px; ">';
+            for ($i = 1; $i <= 9; $i++) {
+                if ($i == 1) {
+                    $color = '#444444';
+                    $hover_color = '#ffffff';
+                    $text_color = '#ffffff';
+                    $text_hover_color = '#444444';
+                    $border_color = '#444444';
+                    $border_hover_color = '#444444';
+                } elseif ($i == 2) {
+                    $color = '#ffffff';
+                    $hover_color = '#444444';
+                    $text_color = '#444444';
+                    $text_hover_color = '#ffffff';
+                    $border_color = '#444444';
+                    $border_hover_color = '#444444';
+                } elseif ($i == 3) {
+                    $color = '#d274e8';
+                    $hover_color = '#a64db2';
+                    $text_color = '#ffffff';
+                    $text_hover_color = '#ffffff';
+                    $border_color = '#d274e8';
+                    $border_hover_color = '#d274e8';
+                } elseif ($i == 4) {
+                    $color = '#dd3333';
+                    $hover_color = '#a61f1f';
+                    $text_color = '#ffffff';
+                    $text_hover_color = '#ffffff';
+                    $border_color = '#dd3333';
+                    $border_hover_color = '#dd3333';
+                } elseif ($i == 5) {
+                    $color = '#ff6900';
+                    $hover_color = '#b84c00';
+                    $text_color = '#ffffff';
+                    $text_hover_color = '#ffffff';
+                    $border_color = '#ff6900';
+                    $border_hover_color = '#ff6900';
+                } elseif ($i == 6) {
+                    $color = '#7ad03a';
+                    $hover_color = '#5a9e2a';
+                    $text_color = '#ffffff';
+                    $text_hover_color = '#ffffff';
+                    $border_color = '#7ad03a';
+                    $border_hover_color = '#7ad03a';
+                } elseif ($i == 7) {
+                    $color = '#00d084';
+                    $hover_color = '#00a0a0';
+                    $text_color = '#ffffff';
+                    $text_hover_color = '#ffffff';
+                    $border_color = '#00d084';
+                    $border_hover_color = '#00d084';
+                } elseif ($i == 8) {
+                    $color = '#00a0d2';
+                    $hover_color = '#0077a0';
+                    $text_color = '#ffffff';
+                    $text_hover_color = '#ffffff';
+                    $border_color = '#00a0d2';
+                    $border_hover_color = '#00a0d2';
+                } elseif ($i == 9) {
+                    $color = '#ff00ff';
+                    $hover_color = '#b200b2';
+                    $text_color = '#ffffff';
+                    $text_hover_color = '#ffffff';
+                    $border_color = '#ff00ff';
+                    $border_hover_color = '#ff00ff';
+                }
+                echo '<div style="padding: 10px; box-sizing: border-box;">';
+                echo '<div style="display: inline-block; padding: 10px; background-color: ' . $color . '; color: ' . $text_color . '; border: 1px solid ' . $border_color . '; border-radius: 3px; cursor: pointer; margin-top: 10px;" onmouseover="this.style.backgroundColor=\'' . $hover_color . '\'; this.style.color=\'' . $text_hover_color . '\'; this.style.borderColor=\'' . $border_hover_color . '\';" onmouseout="this.style.backgroundColor=\'' . $color . '\'; this.style.color=\'' . $text_color . '\'; this.style.borderColor=\'' . $border_color . '\';" onclick="imwCustomButtonSetPlaceholderStyles(' . $i . ')">Style ' . $i . '</div>';
+                echo '</div>';
+            }
+
+            echo '</div>';
             echo '<script>
+                function imwShowHidePlaceholderStylesButtons() {
+                    jQuery("#placeholder-styles-buttons").toggle();
+                }
+
+                jQuery(document).ready(function() {
+                    jQuery("#placeholder-styles-buttons").hide();
+
+                    jQuery("#imw_custom_button_text, #imw_custom_button_text_size, #imw_custom_button_line_height, #imw_custom_button_padding_topbottom, #imw_custom_button_padding_leftright, #imw_custom_button_border_thickness, #imw_custom_button_border_radius").on("change keyup paste", function() {
+                    updatePreviewStyles();
+                    });
+                });
+
+                function imwCustomButtonSetPlaceholderStyles( style ) {
+                    console.log( style );
+                    if ( style == 1 ) {
+                        jQuery("#imw_custom_button_color").val("#444444");
+                        jQuery("#imw_custom_button_hover_color").val("#ffffff");
+                        jQuery("#imw_custom_button_text_color").val("#ffffff");
+                        jQuery("#imw_custom_button_text_hover_color").val("#444444");
+                        jQuery("#imw_custom_button_border_color").val("#444444");
+                        jQuery("#imw_custom_button_border_hover_color").val("#444444");
+                    } else if ( style == 2 ) {
+                        jQuery("#imw_custom_button_color").val("#ffffff");
+                        jQuery("#imw_custom_button_hover_color").val("#444444");
+                        jQuery("#imw_custom_button_text_color").val("#444444");
+                        jQuery("#imw_custom_button_text_hover_color").val("#ffffff");
+                        jQuery("#imw_custom_button_border_color").val("#444444");
+                        jQuery("#imw_custom_button_border_hover_color").val("#444444");
+                    } else if ( style == 3 ) {
+                        jQuery("#imw_custom_button_color").val("#d274e8");
+                        jQuery("#imw_custom_button_hover_color").val("#a64db2");
+                        jQuery("#imw_custom_button_text_color").val("#ffffff");
+                        jQuery("#imw_custom_button_text_hover_color").val("#ffffff");
+                        jQuery("#imw_custom_button_border_color").val("#d274e8");
+                        jQuery("#imw_custom_button_border_hover_color").val("#d274e8");
+                    } else if ( style == 4 ) {
+                        jQuery("#imw_custom_button_color").val("#dd3333");
+                        jQuery("#imw_custom_button_hover_color").val("#a61f1f");
+                        jQuery("#imw_custom_button_text_color").val("#ffffff");
+                        jQuery("#imw_custom_button_text_hover_color").val("#ffffff");
+                        jQuery("#imw_custom_button_border_color").val("#dd3333");
+                        jQuery("#imw_custom_button_border_hover_color").val("#dd3333");
+                    } else if ( style == 5 ) {
+                        jQuery("#imw_custom_button_color").val("#ff6900");
+                        jQuery("#imw_custom_button_hover_color").val("#b84c00");
+                        jQuery("#imw_custom_button_text_color").val("#ffffff");
+                        jQuery("#imw_custom_button_text_hover_color").val("#ffffff");
+                        jQuery("#imw_custom_button_border_color").val("#ff6900");
+                        jQuery("#imw_custom_button_border_hover_color").val("#ff6900");
+                    } else if ( style == 6 ) {
+                        jQuery("#imw_custom_button_color").val("#7ad03a");
+                        jQuery("#imw_custom_button_hover_color").val("#5a9e2a");
+                        jQuery("#imw_custom_button_text_color").val("#ffffff");
+                        jQuery("#imw_custom_button_text_hover_color").val("#ffffff");
+                        jQuery("#imw_custom_button_border_color").val("#7ad03a");
+                        jQuery("#imw_custom_button_border_hover_color").val("#7ad03a");
+                    } else if ( style == 7 ) {
+                        jQuery("#imw_custom_button_color").val("#00d084");
+                        jQuery("#imw_custom_button_hover_color").val("#00a0a0");
+                        jQuery("#imw_custom_button_text_color").val("#ffffff");
+                        jQuery("#imw_custom_button_text_hover_color").val("#ffffff");
+                        jQuery("#imw_custom_button_border_color").val("#00d084");
+                        jQuery("#imw_custom_button_border_hover_color").val("#00d084");
+                    } else if ( style == 8 ) {
+                        jQuery("#imw_custom_button_color").val("#00a0d2");
+                        jQuery("#imw_custom_button_hover_color").val("#0077a0");
+                        jQuery("#imw_custom_button_text_color").val("#ffffff");
+                        jQuery("#imw_custom_button_text_hover_color").val("#ffffff");
+                        jQuery("#imw_custom_button_border_color").val("#00a0d2");
+                        jQuery("#imw_custom_button_border_hover_color").val("#00a0d2");
+                    } else if ( style == 9 ) {
+                        jQuery("#imw_custom_button_color").val("#ff00ff");
+                        jQuery("#imw_custom_button_hover_color").val("#b200b2");
+                        jQuery("#imw_custom_button_text_color").val("#ffffff");
+                        jQuery("#imw_custom_button_text_hover_color").val("#ffffff");
+                        jQuery("#imw_custom_button_border_color").val("#ff00ff");
+                        jQuery("#imw_custom_button_border_hover_color").val("#ff00ff");
+                    }
+                    jQuery("#imw_custom_button_text_size").val("17px");
+                    jQuery("#imw_custom_button_line_height").val("1.424");
+                    jQuery("#imw_custom_button_padding_topbottom").val("16px");
+                    jQuery("#imw_custom_button_padding_leftright").val("22px");
+                    jQuery("#imw_custom_button_border_thickness").val("2px");
+
+                    jQuery(".wp-color-picker").each(function() {
+                        jQuery(this).iris("color", jQuery(this).val());
+                    });
+                    updatePreviewStyles();
+                }
+
                 function imwCustomButtonSetPlaceholderDefaults() {
                     jQuery("#imw_custom_button_text").val("Get the Book");
                     jQuery("#imw_custom_button_color").val("#d274e8");
@@ -270,6 +434,10 @@ function add_imw_custom_button_tab_options()
                     jQuery("#imw_custom_button_hook_action").val("imw_custom_button_action");
 
                     // now update the preview button styles:
+                    updatePreviewStyles();
+                }
+
+                function updatePreviewStyles() {
                     jQuery(".imw-custom-button").css("background-color", jQuery("#imw_custom_button_color").val());
                     jQuery(".imw-custom-button").css("color", jQuery("#imw_custom_button_text_color").val());
                     jQuery(".imw-custom-button").css("font-size", jQuery("#imw_custom_button_text_size").val());
@@ -306,74 +474,6 @@ function add_imw_custom_button_tab_options()
                         jQuery(this).css("color", jQuery("#imw_custom_button_text_color").val());
                         jQuery(this).css("border", jQuery("#imw_custom_button_border_thickness").val() + " solid " + jQuery("#imw_custom_button_border_color").val());
                     });
-                }
-                function imw_custom_button_admin_preview() {
-                  var buttonColor = document.getElementById(
-                    "imw_custom_button_color"
-                  ).value;
-                  var buttonHoverColor = document.getElementById(
-                    "imw_custom_button_hover_color"
-                  ).value;
-                  var buttonTextColor = document.getElementById(
-                    "imw_custom_button_text_color"
-                  ).value;
-                  var buttonTextHoverColor = document.getElementById(
-                    "imw_custom_button_text_hover_color"
-                  ).value;
-                  var buttonBorderColor = document.getElementById(
-                    "imw_custom_button_border_color"
-                  ).value;
-                  var buttonBorderHoverColor = document.getElementById(
-                    "imw_custom_button_border_hover_color"
-                  ).value;
-                  var buttonTextSize = document.getElementById(
-                    "imw_custom_button_text_size"
-                  ).value;
-                  var buttonLineHeight = document.getElementById(
-                    "imw_custom_button_line_height"
-                  ).value;
-                  var buttonPaddingTopBottom = document.getElementById(
-                    "imw_custom_button_padding_topbottom"
-                  ).value;
-                  var buttonPaddingLeftRight = document.getElementById(
-                    "imw_custom_button_padding_leftright"
-                  ).value;
-                  var buttonBorderRadius = document.getElementById(
-                    "imw_custom_button_border_radius"
-                  ).value;
-                  var buttonBorderThickness = document.getElementById(
-                    "imw_custom_button_border_thickness"
-                  ).value;
-                  var buttonPreview = document.getElementById(
-                    "imw-custom-button-preview"
-                  );
-                  buttonPreview.style.backgroundColor = buttonColor;
-                  buttonPreview.style.color = buttonTextColor;
-                  buttonPreview.style.fontSize = buttonTextSize;
-                  buttonPreview.style.borderRadius = buttonBorderRadius;
-                  buttonPreview.style.padding =
-                    buttonPaddingTopBottom + " " + buttonPaddingLeftRight;
-                  buttonPreview.style.fontWeight = "600";
-                  buttonPreview.style.letterSpacing = "0.05em";
-                  buttonPreview.style.textTransform = "uppercase";
-                  buttonPreview.style.fontFamily = "Gentium Book Basic";
-                  buttonPreview.style.border =
-                    buttonBorderThickness + " solid " + buttonBorderColor;
-                  buttonPreview.style.lineHeight = buttonLineHeight;
-                  buttonPreview.onmouseover = function () {
-                    buttonPreview.style.backgroundColor = buttonHoverColor;
-                    buttonPreview.style.color = buttonTextHoverColor;
-                    buttonPreview.style.border =
-                      buttonBorderThickness +
-                      " solid " +
-                      buttonBorderHoverColor;
-                  };
-                  buttonPreview.onmouseout = function () {
-                    buttonPreview.style.backgroundColor = buttonColor;
-                    buttonPreview.style.color = buttonTextColor;
-                    buttonPreview.style.border =
-                      buttonBorderThickness + " solid " + buttonBorderColor;
-                  };
                 }
             </script>';
 
@@ -440,13 +540,37 @@ function add_imw_custom_button_tab_options()
             ?>
             <script>
                 jQuery(document).ready(function($) {
-                    $('#<?php echo $buttoncolorfield['id']; ?>').wpColorPicker();
-                    $('#<?php echo $buttonhovercolorfield['id']; ?>').wpColorPicker();
-                    $('#<?php echo $buttontextcolorfield['id']; ?>').wpColorPicker();
-                    $('#<?php echo $buttontexthovercolorfield['id']; ?>').wpColorPicker();
-                    $('#<?php echo $buttonbordercolor['id']; ?>').wpColorPicker();
-                    $('#<?php echo $buttonborderhovercolor['id']; ?>').wpColorPicker();
-
+                    // on change updatePreviewStyles()
+                    $('#<?php echo $buttoncolorfield['id']; ?>').wpColorPicker({
+                        change: function(event, ui) {
+                            updatePreviewStyles();
+                        }
+                    });
+                    $('#<?php echo $buttonhovercolorfield['id']; ?>').wpColorPicker({
+                        change: function(event, ui) {
+                            updatePreviewStyles();
+                        }
+                    });
+                    $('#<?php echo $buttontextcolorfield['id']; ?>').wpColorPicker({
+                        change: function(event, ui) {
+                            updatePreviewStyles();
+                        }
+                    });
+                    $('#<?php echo $buttontexthovercolorfield['id']; ?>').wpColorPicker({
+                        change: function(event, ui) {
+                            updatePreviewStyles();
+                        }
+                    });
+                    $('#<?php echo $buttonbordercolor['id']; ?>').wpColorPicker({
+                        change: function(event, ui) {
+                            updatePreviewStyles();
+                        }
+                    });
+                    $('#<?php echo $buttonborderhovercolor['id']; ?>').wpColorPicker({
+                        change: function(event, ui) {
+                            updatePreviewStyles();
+                        }
+                    });
                 });
             </script>
             <?php
@@ -458,7 +582,6 @@ function add_imw_custom_button_tab_options()
                 'description' => __('Enter the size for the custom button text.', 'woocommerce'),
                 'value' => $custom_button_text_size,
             ));
-
             woocommerce_wp_text_input(array(
                 'id' => 'imw_custom_button_line_height',
                 'label' => __('Button Line Height', 'woocommerce'),
@@ -491,7 +614,6 @@ function add_imw_custom_button_tab_options()
                 'description' => __('Enter the border radius for the custom button.', 'woocommerce'),
                 'value' => $custom_button_border_radius,
             ));
-
             woocommerce_wp_text_input(array(
                 'id' => 'imw_custom_button_border_thickness',
                 'label' => __('Button Border Thickness', 'woocommerce'),
@@ -500,23 +622,31 @@ function add_imw_custom_button_tab_options()
                 'description' => __('Enter the thickness for the custom button border.', 'woocommerce'),
                 'value' => $custom_button_border_thickness,
             ));
-
             echo '<hr>';
             // preview
             echo
-            '<h3 id="imw_update_preview_button" onclick="imw_custom_button_admin_preview()" style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px; padding: 10px; background-color: #f1f1f1; border: 1px solid #e1e1e1; border-radius: 3px; cursor: pointer;">Click To Update Preview</h3>';
+            '<h3 id="imw_update_preview_button" style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px; padding: 10px; background-color: #f1f1f1; border: 1px solid #e1e1e1; border-radius: 3px;">Button Preview:</h3>';
             echo '<a href="' . $custom_button_link . '" id="imw-custom-button-preview" class="imw-custom-button" style="background-color: ' . $custom_button_color . '; color: ' . $custom_button_text_color . '; font-size: ' . $custom_button_text_size . '; border-radius: ' . $custom_button_border_radius . '; padding: ' . $custom_button_padding_topbottom . ' ' . $custom_button_padding_leftright . '; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-family: Gentium Book Basic; margin-top: 10px; margin-left: 10px; margin-right: 4px; text-decoration: none; font-family: Gentium Book Basic; text-transform: uppercase; line-height: ' . $custom_button_line_height . '; border: ' . $custom_button_border_thickness . ' solid ' . $custom_button_border_color . ';" ' . ($custom_button_open_in_new_tab == 'yes' ? 'target="_blank"' : '') . ' onmouseover="this.style.backgroundColor=\'' . $custom_button_hover_color . '\'; this.style.color=\'' . $custom_button_text_hover_color . '\'; this.style.borderColor=\'' . $custom_button_border_hover_color . '\';" onmouseout="this.style.backgroundColor=\'' . $custom_button_color . '\'; this.style.color=\'' . $custom_button_text_color . '\'; this.style.borderColor=\'' . $custom_button_border_color . '\';">' . $custom_button_text . '</a>';
             echo '<hr style="margin-top: 25px;">';
 
             echo '<button type="submit" class="button button-primary button-large" name="save">Save</button>';
-
             ?>
         </div>
     </div>
 <?php
 }
+add_action('woocommerce_product_data_panels', 'add_imw_custom_button_tab_options');
 
-add_action('woocommerce_process_product_meta', 'save_imw_custom_button_tab_options');
+/**
+ * Saves the user options for a specific product
+ * @param $post_id
+ * @return mixed : the post ID, or false if:
+ * - the post is not a product
+ * - the user does not have permission to edit it
+ * - the nonce is invalid (security)
+ * - the post is a revision/autosave/not published
+ * - product type does not match
+ */
 function save_imw_custom_button_tab_options($post_id)
 {
     $custom_button_hook_action = $_POST['imw_custom_button_hook_action'];
@@ -566,12 +696,12 @@ function save_imw_custom_button_tab_options($post_id)
     update_option('imw_custom_button_archives_toggle', $custom_button_archives_toggle);
     update_option('imw_hide_all_other_buttons_archive_toggle', $hide_all_other_buttons_archive_toggle);
 }
+add_action('woocommerce_process_product_meta', 'save_imw_custom_button_tab_options');
 
-//  * @hooked woocommerce_template_single_add_to_cart - 30 priority (make it higher priority here if using standard hooks)
-
-// do actions
-
-add_action('wp', 'imw_custom_button_init');
+/**
+ * Initiate the custom button hooks & actions on the product page, or whatever hook the user has selected
+ * @return void
+ */
 function imw_custom_button_init()
 {
     if (is_woocommerce() && !is_admin() && !is_cart() && !is_checkout()) {
@@ -599,10 +729,12 @@ function imw_custom_button_init()
         }
     }
 }
+add_action('wp', 'imw_custom_button_init');
 
-// add_action('woocommerce_before_add_to_cart_button', 'imw_custom_button', 1, 2);
-
-add_action('woocommerce_after_shop_loop_item_title', 'imw_custom_button_archives');
+/**
+ * Initiate the custom button action on archives and woocommerce product loops
+ * @return void
+ */
 function imw_custom_button_archives()
 {
     $custom_button_archives_toggle = get_option('imw_custom_button_archives_toggle');
@@ -612,7 +744,18 @@ function imw_custom_button_archives()
         add_action('woocommerce_after_shop_loop_item', 'imw_custom_button');
     }
 }
+add_action('woocommerce_after_shop_loop_item_title', 'imw_custom_button_archives');
 
+/**
+ * Hides all other buttons in woocommerce archives and product loops
+ *
+ * remove_action hooks for:
+ * - `woocommerce_template_loop_add_to_cart`
+ * - `woocommerce_template_loop_price`
+ * - `woocommerce_template_loop_rating`
+ *
+ * @return void
+ */
 function hide_all_other_buttons()
 {
     if (did_action('hide_all_other_buttons')) {
@@ -620,7 +763,7 @@ function hide_all_other_buttons()
     }
 
     $hide_all_other_buttons_archive_toggle = get_option('imw_hide_all_other_buttons_archive_toggle');
-    // if not admin page && hide all other buttons is enabled
+
     if ($hide_all_other_buttons_archive_toggle == 'yes' && !is_admin()) {
         remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
         remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_price', 10);
@@ -628,9 +771,14 @@ function hide_all_other_buttons()
     }
 }
 
+/**
+ * Generates the CSS styles for the custom button,
+ * and returns them as a string.
+ *
+ * @return string `$custom_button_style` CSS styles for the custom button.
+ */
 function imw_custom_button_style()
 {
-    // if is_admin `get_post_meta($product->get_id()` should return "preview"
     global $product;
     $custom_button_color = get_post_meta($product->get_id(), 'imw_custom_button_color', true);
     $custom_button_text_color = get_post_meta($product->get_id(), 'imw_custom_button_text_color', true);
@@ -693,6 +841,11 @@ function imw_custom_button_style()
     return $custom_button_style;
 }
 
+/**
+ * Adds custom button to woocommerce archives and product loops
+ *
+ * @return void
+ */
 function imw_custom_button()
 {
     global $product;
